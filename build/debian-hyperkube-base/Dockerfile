@@ -40,15 +40,15 @@ RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 RUN echo CACHEBUST>/dev/null && clean-install \
     ca-certificates \
-    ceph-common \
-    cifs-utils \
+    #ceph-common \
+    #cifs-utils \
     conntrack \
-    e2fsprogs \
-    xfsprogs \
+    #e2fsprogs \
+    #xfsprogs \
     ebtables \
     ethtool \
     git \
-    glusterfs-client \
+    #glusterfs-client \
     iptables \
     ipset \
     jq \

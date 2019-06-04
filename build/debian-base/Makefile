@@ -14,11 +14,11 @@
 
 all: all-build
 
-REGISTRY ?= staging-k8s.gcr.io
+REGISTRY ?= cogniac
 IMAGE ?= $(REGISTRY)/debian-base
 BUILD_IMAGE ?= debian-build
 
-TAG ?= v1.0.0
+TAG ?= 0.4.1
 
 TAR_FILE ?= rootfs.tar
 ARCH?=amd64
@@ -33,7 +33,7 @@ SUDO=$(if $(filter 0,$(shell id -u)),,sudo)
 export DOCKER_CLI_EXPERIMENTAL := enabled
 
 ifeq ($(ARCH),amd64)
-	BASEIMAGE?=debian:testing
+	BASEIMAGE?=debian:buster
 endif
 ifeq ($(ARCH),arm)
 	BASEIMAGE?=arm32v7/debian:stretch

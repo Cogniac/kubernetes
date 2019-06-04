@@ -19,13 +19,13 @@
 
 REGISTRY?=staging-k8s.gcr.io
 IMAGE?=$(REGISTRY)/debian-hyperkube-base
-TAG=0.12.1
+TAG=0.12.0
 ARCH?=amd64
 ALL_ARCH = amd64 arm arm64 ppc64le s390x
 CACHEBUST?=1
 
-# BASEIMAGE=k8s.gcr.io/debian-base-$(ARCH):0.4.1
-BASEIMAGE?=cogniac/debian-base:dev-0.2
+#BASEIMAGE=k8s.gcr.io/debian-base-$(ARCH):0.4.1
+BASEIMAGE=cogniac/debian-base-$(ARCH):0.4.1
 CNI_VERSION=v0.7.5
 
 TEMP_DIR:=$(shell mktemp -d)
@@ -65,8 +65,10 @@ clean:
 	rm -rf cni-tars/
 
 build: cni-tars/$(CNI_TARBALL)
+	@echo $(REGISTRY)
+	@echo $(ARCH)
 	cp Dockerfile $(TEMP_DIR)
-	cd $(TEMP_DIR) && sed -i "s|BASEIMAGE|$(BASEIMAGE)|g" Dockerfile
+	cd $(TEMP_DIR) && sed -i.back "s|BASEIMAGE|$(BASEIMAGE)|g" Dockerfile
 
 ifeq ($(CACHEBUST),1)
 	cd ${TEMP_DIR} && sed -i.back "s|CACHEBUST|$(shell uuidgen)|g" Dockerfile
@@ -79,7 +81,8 @@ ifneq ($(ARCH),amd64)
 	# Register /usr/bin/qemu-ARCH-static as the handler for non-x86 binaries in the kernel
 	$(SUDO) ../../third_party/multiarch/qemu-user-static/register/register.sh --reset
 endif
-	docker build --pull -t $(IMAGE)-$(ARCH):$(TAG) $(TEMP_DIR)
+	# docker build --pull -t $(IMAGE)-$(ARCH):$(TAG) $(TEMP_DIR) 
+	docker build -t $(REGISTRY)/hyperkube-$(ARCH):$(TAG) $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
 
 push: build
